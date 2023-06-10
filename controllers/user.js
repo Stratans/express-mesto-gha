@@ -61,3 +61,24 @@ module.exports.updateProfile = ((req, res) => {
       res.status(500).send({ message: 'Произошла ошибка' });
     });
 });
+
+// ОБНОВЛЕНИЕ АВАТАРА
+module.exports.updateAvatar = ((req, res) => {
+  const { avatar } = req.body;
+  const userId = req.user._id;
+  user.findByIdAndUpdate(userId, { avatar }, { runValidators: true, new: true })
+    .then((userData) => {
+      if (!userData) {
+        res.status(404).send({ message: 'Пользователь не найден' });
+        return;
+      }
+      res.send({ data: userData });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректное данные' });
+        return;
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
+});

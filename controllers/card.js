@@ -42,3 +42,44 @@ module.exports.deleteCard = ((req, res) => {
       res.status(500).send({ message: 'Произошла ошибка' });
     });
 });
+
+// СТАВИМ ЛАЙК КАРТОЧКЕ
+module.exports.likeCard = ((req, res) => {
+  const cardId = req.params._id;
+  const userId = req.user._id;
+  card.findByIdAndUpdate(cardId, { $addToSet: { likes: userId } }, { new: true })
+    .then((cardData) => {
+      if (!cardData) {
+        res.status(404).send({ message: 'Карточка не найдена' });
+        return;
+      }
+      res.send({ data: cardData });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Некорректный айди' });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
+});
+
+// СТАВИМ ДИЗЛАЙК КАРТОЧКЕ
+module.exports.dislikeCard = ((req, res) => {
+  const cardId = req.params._id;
+  const userId = req.user._id;
+  card.findByIdAndUpdate(cardId, { $pull: { likes: userId } }, { new: true })
+
+    .then((cardData) => {
+      if (!cardData) {
+        res.status(404).send({ message: 'Карточка не найдена' });
+        return;
+      }
+      res.send({ data: cardData });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Некорректный айди' });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
+});
