@@ -11,3 +11,7 @@ mongoose
 app.listen(PORT, () => {
   console.log('Сервер запущен');
 });
+
+// app.listen(PORT, () => {
+//   console.log('Сервер запущен');
+// });
