@@ -1,9 +1,16 @@
 const user = require('../models/user');
 
+const {
+  CREATED,
+  ERROR,
+  NOT_FOUND,
+  SERVER_ERROR,
+} = require('../utils/constants');
+
 module.exports.getUsers = (req, res) => {
   user.find({})
     .then((userData) => res.send({ data: userData }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 };
 
 // ДОБАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ
@@ -11,13 +18,13 @@ module.exports.createUser = ((req, res) => {
   const { name, about, avatar } = req.body;
   user.create({ name, about, avatar })
     .then((userData) => {
-      res.status(201).send({ data: userData });
+      res.status(CREATED).send({ data: userData });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректные данные' });
+        res.status(ERROR).send({ message: 'Некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 });
@@ -27,17 +34,17 @@ module.exports.getUserById = ((req, res) => {
   user.findById(req.params._id)
     .then((userData) => {
       if (!userData) {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь не найден' });
         return;
       }
       res.send({ data: userData });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Некорректное айди' });
+        res.status(ERROR).send({ message: 'Некорректное айди' });
         return;
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 });
 
@@ -48,17 +55,17 @@ module.exports.updateProfile = ((req, res) => {
   user.findByIdAndUpdate(userId, { name, about }, { runValidators: true, new: true })
     .then((userData) => {
       if (!userData) {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь не найден' });
         return;
       }
       res.send({ data: userData });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректное данные' });
+        res.status(ERROR).send({ message: 'Некорректное данные' });
         return;
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 });
 
@@ -69,16 +76,16 @@ module.exports.updateAvatar = ((req, res) => {
   user.findByIdAndUpdate(userId, { avatar }, { runValidators: true, new: true })
     .then((userData) => {
       if (!userData) {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь не найден' });
         return;
       }
       res.send({ data: userData });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректное данные' });
+        res.status(ERROR).send({ message: 'Некорректное данные' });
         return;
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 });

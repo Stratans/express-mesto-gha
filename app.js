@@ -17,17 +17,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// const userRouter = require('./routes/user');
-// const cardRouter = require('./routes/card');
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', router);
-// app.use('/users', userRouter);
-// app.use('/cards', cardRouter);
-// app.use((req, res) => {
-//   res.status(404).send({ message: 'Страница не найдена' });
-// });
 
 app.listen(PORT, () => {
   console.log('Сервер запущен');
