@@ -8,6 +8,23 @@ mongoose
   .then(() => console.log('Соединение с базой данных установлено'))
   .catch(() => console.log('Ошибка соединения с базой данных'));
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '6484651b1ae75a1fabf96305',
+  };
+
+  next();
+});
+
+const userRouter = require('./routes/user');
+const cardRouter = require('./routes/card');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/users', userRouter);
+app.use('/cards', cardRouter);
+
 app.listen(PORT, () => {
   console.log('Сервер запущен');
 });
