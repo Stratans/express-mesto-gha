@@ -14,7 +14,7 @@ module.exports.getCards = (req, res, next) => {
   card.find({})
     .populate(['owner', 'likes'])
     .then((cardData) => res.status(STATUS_ОК).send({ data: cardData }))
-    .catch(next());
+    .catch(next);
 };
 
 // СОЗДАНИЕ КАРТОЧКИ
