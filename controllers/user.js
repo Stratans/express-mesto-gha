@@ -105,11 +105,7 @@ module.exports.login = ((req, res, next) => {
         res.send({ token });
       }
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new ValidationError('Приехали! Некорректные данные!'));
-      } else next(err);
-    });
+    .catch(next);
 });
 
 // ПОЛУЧЕНИЕ ИНФОРМАЦИИ О ПОЛЬЗОВАТЕЛЕ
