@@ -9,13 +9,13 @@ mongoose
   .then(() => console.log('Соединение с базой данных установлено'))
   .catch(() => console.log('Ошибка соединения с базой данных'));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6484651b1ae75a1fabf96305',
-  };
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '6484651b1ae75a1fabf96305',
+//   };
 
-  next();
-});
+//   next();
+// });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

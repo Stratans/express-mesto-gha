@@ -101,6 +101,7 @@ module.exports.updateAvatar = ((req, res) => {
     });
 });
 
+// ЛОГИН
 module.exports.login = ((req, res) => {
   const { email, password } = req.body;
   return user.findUserByCredentials(email, password)
@@ -113,6 +114,25 @@ module.exports.login = ((req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ERROR).send({ message: 'Некорректное данные' });
+        return;
+      }
+      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+    });
+});
+
+// ПОЛУЧЕНИЕ ИНФОРМАЦИИ О ПОЛЬЗОВАТЕЛЕ
+module.exports.getUserInfo = ((req, res) => {
+  user.findById(req.user._id)
+    .then((userData) => {
+      if (!userData) {
+        res.status(NOT_FOUND).send({ message: 'Пользователь не найден' });
+        return;
+      }
+      res.send({ data: userData });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR).send({ message: 'Некорректное айди' });
         return;
       }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });

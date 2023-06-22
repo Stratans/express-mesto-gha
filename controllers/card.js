@@ -34,13 +34,21 @@ module.exports.createCard = ((req, res) => {
 // УДАЛЕНИЕ КАРТОЧКИ ПО АЙДИ
 module.exports.deleteCard = ((req, res) => {
   const cardId = req.params._id;
-  card.findByIdAndRemove(cardId)
+  const userId = req.user._id;
+  card.findById(cardId)
     .then((cardData) => {
       if (!cardData) {
         res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
         return;
       }
-      res.send({ data: cardData });
+      if (cardData.owner.toString() !== userId) {
+        res.status(NOT_FOUND).send({ message: 'Нет прав для удаления' });
+        return;
+      }
+      card.findByIdAndRemove(cardId)
+        .then(() => {
+          res.send({ data: cardData });
+        });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
