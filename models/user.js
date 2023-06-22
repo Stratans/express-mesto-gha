@@ -4,7 +4,6 @@ const isUrl = require('validator/lib/isURL');
 const isEmail = require('validator/lib/isEmail');
 const UnAuthorizedError = require('../errors/unAuthorizedError');
 
-
 const userSchema = new mongoose.Schema({
   name: { // у пользователя есть имя — опишем требования к имени в схеме:
     type: String, // имя — это строка
