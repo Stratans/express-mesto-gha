@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const user = require('../models/user');
 
 const {
@@ -15,11 +17,20 @@ module.exports.getUsers = (req, res) => {
 
 // ДОБАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ
 module.exports.createUser = ((req, res) => {
-  const { name, about, avatar } = req.body;
-  user.create({ name, about, avatar })
-    .then((userData) => {
-      res.status(CREATED).send({ data: userData });
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => user.create({
+      name, about, avatar, email, password: hash,
     })
+      .then((userData) => {
+        const { _id } = userData;
+        res.status(CREATED).send({
+          _id, name, about, avatar, email,
+        });
+      }))
+
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ERROR).send({ message: 'Некорректные данные' });
@@ -80,6 +91,24 @@ module.exports.updateAvatar = ((req, res) => {
         return;
       }
       res.send({ data: userData });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(ERROR).send({ message: 'Некорректное данные' });
+        return;
+      }
+      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
+    });
+});
+
+module.exports.login = ((req, res) => {
+  const { email, password } = req.body;
+  return user.findUserByCredentials(email, password)
+    .then((userData) => {
+      if (userData) {
+        const token = jwt.sign({ _id: userData._id }, 'secret-key', { expiresIn: '7d' });
+        res.send({ token });
+      }
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
