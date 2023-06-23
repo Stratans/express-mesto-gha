@@ -37,8 +37,9 @@ module.exports.createUser = ((req, res, next) => {
         next(new ValidationError('Приехали! Некорректные данные!'));
       } else if (err.code === 11000) {
         next(new ConflictError('Приехали! Пользователь уже существует!'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 });
 
@@ -117,10 +118,5 @@ module.exports.getUserInfo = ((req, res, next) => {
       }
       res.send({ data: userData });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new CastError('Приехали! Некорректное айди!'));
-      }
-      next(err);
-    });
+    .catch(next);
 });
