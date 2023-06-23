@@ -55,8 +55,7 @@ module.exports.getUserById = ((req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new CastError('Приехали! Некорректное айди!'));
-      }
-      next(err);
+      } else next(err);
     });
 });
 
