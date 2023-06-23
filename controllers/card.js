@@ -34,9 +34,16 @@ module.exports.createCard = ((req, res, next) => {
 
 // УДАЛЕНИЕ КАРТОЧКИ ПО АЙДИ
 module.exports.deleteCard = ((req, res, next) => {
-  const cardId = req.params._id;
+  // const cardId = req.params._id;
   const userId = req.user._id;
-  card.findById(cardId)
+  const removeCard = () => {
+    card.findByIdAndRemove(req.params._id)
+      .then((cardData) => {
+        res.send({ data: cardData });
+      })
+      .catch(next);
+  };
+  card.findById(req.params._id)
     .then((cardData) => {
       if (!cardData) {
         throw new NotFoundError('Приехали! Пользователь не найден!');
@@ -44,10 +51,11 @@ module.exports.deleteCard = ((req, res, next) => {
       if (cardData.owner.toString() !== userId) {
         throw new ForbiddenError('Приехали! Не имеете права удалять чужую карточку!');
       }
-      card.findByIdAndRemove(cardId)
-        .then(() => {
-          res.send({ data: cardData });
-        });
+      return removeCard();
+      // card.findByIdAndRemove(cardId)
+      //   .then(() => {
+      //     res.send({ data: cardData });
+      //   });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
