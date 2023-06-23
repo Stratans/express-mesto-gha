@@ -3,8 +3,8 @@ const { celebrate, Joi } = require('celebrate');
 const userRouter = require('./user');
 const cardRouter = require('./card');
 const { createUser, login } = require('../controllers/user');
-const { NOT_FOUND } = require('../utils/constants');
 const auth = require('../middlewares/auth');
+const NotFoundError = require('../errors/notFound');
 
 router.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -29,8 +29,8 @@ router.use('/users', userRouter);
 
 router.use('/cards', cardRouter);
 
-router.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Страница не найдена' });
+router.use((req, res, next) => {
+  next(new NotFoundError('Приехали! Страница не найдена!'));
 });
 
 module.exports = router;
