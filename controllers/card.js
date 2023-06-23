@@ -34,7 +34,6 @@ module.exports.createCard = ((req, res, next) => {
 
 // УДАЛЕНИЕ КАРТОЧКИ ПО АЙДИ
 module.exports.deleteCard = ((req, res, next) => {
-  // const cardId = req.params._id;
   const userId = req.user._id;
   const removeCard = () => {
     card.findByIdAndRemove(req.params._id)
@@ -52,10 +51,6 @@ module.exports.deleteCard = ((req, res, next) => {
         throw new ForbiddenError('Приехали! Не имеете права удалять чужую карточку!');
       }
       return removeCard();
-      // card.findByIdAndRemove(cardId)
-      //   .then(() => {
-      //     res.send({ data: cardData });
-      //   });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
